@@ -4,7 +4,8 @@ const deleteKey = require('./redisDeleteInvalidate');
 
 const {
   generateCacheKey,
-  isFindGetCacheExist
+  isFindGetCacheExist,
+  getKeyPrefix
 } = require('./utils');
 
 module.exports = function(Model, options) {
@@ -40,9 +41,9 @@ module.exports = function(Model, options) {
       if (hasCacheParameter) {
         let modelName = ctx.method.sharedClass.name;
 
-        console.log('ctx:', ctx);
         // set key name
-        const cache_key = generateCacheKey({modelName, ctx, id: ''});//TODO: add token from request
+        const prefix = getKeyPrefix({options, ctx});
+        const cache_key = generateCacheKey({modelName, ctx, id: prefix});
 
         // search for cache
         redisClient.get(cache_key, function(err, val) {
@@ -50,11 +51,11 @@ module.exports = function(Model, options) {
             console.log(err);
           }
 
-          if( val !== null ){
+          if ( val !== null ) {
             ctx.result = JSON.parse(val);
-            ctx.done(function(err) {
+            ctx.done( function(err) {
               if (err) return next(err);
-            });
+            } );
           } else {
             next();
           }
@@ -83,7 +84,8 @@ module.exports = function(Model, options) {
         const cachExpire = ctx.req.query.cache;
 
         // set key name
-        const cache_key = generateCacheKey({modelName, ctx, id: ''});
+        const prefix = getKeyPrefix({options, ctx});
+        const cache_key = generateCacheKey({modelName, ctx, id: prefix});
 
         // search for cache
         redisClient.get(cache_key, function(err, val) {
@@ -121,10 +123,11 @@ module.exports = function(Model, options) {
       const modelName = ctx.method.sharedClass.name;
 
       // set key name
+      const prefix = getKeyPrefix({options, ctx});
       const cache_key = generateCacheKey({
         modelName,
         ctx,
-        id: '',
+        id: prefix,
         all: true
       });
 

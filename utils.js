@@ -1,3 +1,5 @@
+const get = require('lodash.get');
+
 function isFindGetCacheExist(ctx){
   const findMethod = ctx.method.name.indexOf("find") !== -1;
   const getMethod = ctx.method.name.indexOf("__get") !== -1;
@@ -16,7 +18,18 @@ function generateCacheKey({modelName, ctx, id, all = false}) {
     : `${token}_${modelName}_${new Buffer(JSON.stringify(ctx.req.query)).toString('base64')}`;
 }
 
+function getKeyPrefix({options, ctx}) {
+  const {
+    customPrefix,
+    ctxParameterAsPrefix
+  } = options;
+
+  return String( get(ctx, ctxParameterAsPrefix, customPrefix) );
+}
+
+
 module.exports = {
   generateCacheKey,
-  isFindGetCacheExist
+  isFindGetCacheExist,
+  getKeyPrefix
 };

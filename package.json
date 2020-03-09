@@ -1,6 +1,6 @@
 {
   "name": "loopback-redis-cache",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Redis cache for loopback.io",
   "main": "rediscache.js",
   "scripts": {
@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/vkatsar/loopback-redis-cache#readme",
   "dependencies": {
+    "lodash.get": "^4.4.2",
     "redis": "^2.7.1",
     "redis-delete-pattern": "^0.1.0"
   }

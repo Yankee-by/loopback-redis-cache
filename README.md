@@ -59,12 +59,43 @@ At your model (using external redis server)
      }    
   }
   ```
-  
   Example 
     ``
   http://0.0.0.0:3000/api/games?cache=120
     ``
   cache value in seconds
+  
+  ### Mixin parameters
+  It is possible to mutate default redis key.
+  
+  **customPrefix** option will add custom string at the start of the redis key on each operation
+  ```
+    "mixins": {
+       "Rediscache": {
+         "customPrefix": "project"
+       }    
+    }
+  ```
+
+  It will form the new key string like this
+  ```
+    "project_modelname_..."
+  ```
+  
+  **ctxParameterAsPrefix** option will use value of context's parameter as a prefix value
+
+ ```
+     "mixins": {
+        "Rediscache": {
+          "ctxParameterAsPrefix": "req.accessToken.userId"
+        }    
+     }
+   ```
+ 
+   It will form the new key string like this
+   ```
+     "5e3196d344661d001f95ee00_modelname_..."
+   ```
   
   ### AngularJS SDK example
   
