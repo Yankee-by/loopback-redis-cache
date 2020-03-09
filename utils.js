@@ -24,7 +24,7 @@ function getKeyPrefix({options, ctx}) {
     ctxParameterAsPrefix
   } = options;
 
-  return String( get(ctx, ctxParameterAsPrefix, customPrefix) );
+  return String( get(ctx, ctxParameterAsPrefix, customPrefix) || '' );
 }
 
 
