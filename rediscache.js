@@ -13,6 +13,8 @@ module.exports = function(Model, options) {
     ? options.client
     : app.get('redis');
 
+  const {customMethods = []} = (options || {});
+
   let redisClient = redis.createClient(clientSettings);
 
   redisClient.on("error", function (err) {
@@ -34,8 +36,10 @@ module.exports = function(Model, options) {
       hasCacheParameter
     ] = isFindGetCacheExist(ctx);
 
+    const customMethod = customMethods.some((method) => ctx.method.name.indexOf(method) !== -1);
+
     if (
-      ( findMethod || getMethod ) && redisClient.connected
+      ( findMethod || getMethod || customMethod ) && redisClient.connected
     ) {
 
       if (hasCacheParameter) {
@@ -76,8 +80,10 @@ module.exports = function(Model, options) {
       hasCacheParameter
     ] = isFindGetCacheExist(ctx);
 
+    const customMethod = customMethods.some((method) => ctx.method.name.indexOf(method) !== -1);
+
     if (
-      ( findMethod || getMethod ) && redisClient.connected
+      ( findMethod || getMethod || customMethod) && redisClient.connected
     ) {
       if (hasCacheParameter) {
         const modelName = ctx.method.sharedClass.name;
@@ -117,8 +123,10 @@ module.exports = function(Model, options) {
       getMethod
     ] = isFindGetCacheExist(ctx);
 
+    const customMethod = customMethods.some((method) => ctx.method.name.indexOf(method) !== -1);
+
     if (
-      (!findMethod && !getMethod) && redisClient.connected
+      (!findMethod && !getMethod && !customMethod) && redisClient.connected
     ) {
       const modelName = ctx.method.sharedClass.name;
 
@@ -138,5 +146,3 @@ module.exports = function(Model, options) {
     }
   });
 }
-
-
