@@ -116,7 +116,7 @@ module.exports = function(Model, options) {
     }
   });
 
-  Model.afterRemote('**', function(ctx, res, next) {
+  Model.afterRemote('**', async function(ctx, res, next) {
     // delete cache on patchOrCreate, create, delete, update, destroy, upsert
     const [
       findMethod,
@@ -140,7 +140,8 @@ module.exports = function(Model, options) {
       });
 
       // delete cache
-      return deleteKey({client: redisClient, key: cache_key}, next);
+      await deleteKey({client: redisClient, key: cache_key});
+      return ctx;
     } else {
       next();
     }

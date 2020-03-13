@@ -10,7 +10,7 @@ module.exports = function({client, key}, cb) {
         console.log(err);
       }
 
-      resolve( cb() );
+      resolve();
     });
   });
 }
